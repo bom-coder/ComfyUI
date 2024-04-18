@@ -5,41 +5,46 @@ The most powerful and modular stable diffusion GUI and backend.
 ![ComfyUI Screenshot](comfyui_screenshot.png)
 
 This ui will let you design and execute advanced stable diffusion pipelines using a graph/nodes/flowchart based interface. For some workflow examples and see what ComfyUI can do you can check out:
+
+## Install by bom
+`windows` `cpu`
+1. 克隆代码(需要安装git)
+   ```
+   git clone https://github.com/bom-coder/ComfyUI.git
+   ```
+2. 创建好虚拟环境并激活
+   ```
+   virtualenv .env
+   ```
+   ```
+   .\.env\Scripts\activate
+   ```
+3. 修改[extra_model_paths.yaml.example](extra_model_paths.yaml.example)内容并且重命名为`extra_model_paths.yaml`
+   如果没有使用过`sd`,那完全可以使用默认配置
+4. 下载依赖不安装(有网)
+   ```
+   mkdir  requirements
+   ```
+   ```
+    pip download -r requirements.txt -d .\requirements
+   ```
+5. 安装下载好的包(断网)
+   ```
+   pip install --no-index --find-links=.\requirements -r requirements.txt
+   ```
+6. 启动comfyui
+   ```
+   python main.py --help
+   ```
+   ```
+   python main.py --cpu
+   ```
 ### [ComfyUI Examples](https://comfyanonymous.github.io/ComfyUI_examples/)
 
 ### [Installing ComfyUI](#installing)
 
-## Features
-- Nodes/graph/flowchart interface to experiment and create complex Stable Diffusion workflows without needing to code anything.
-- Fully supports SD1.x, SD2.x, [SDXL](https://comfyanonymous.github.io/ComfyUI_examples/sdxl/), [Stable Video Diffusion](https://comfyanonymous.github.io/ComfyUI_examples/video/) and [Stable Cascade](https://comfyanonymous.github.io/ComfyUI_examples/stable_cascade/)
-- Asynchronous Queue system
-- Many optimizations: Only re-executes the parts of the workflow that changes between executions.
-- Command line option: ```--lowvram``` to make it work on GPUs with less than 3GB vram (enabled automatically on GPUs with low vram)
-- Works even if you don't have a GPU with: ```--cpu``` (slow)
-- Can load ckpt, safetensors and diffusers models/checkpoints. Standalone VAEs and CLIP models.
-- Embeddings/Textual inversion
-- [Loras (regular, locon and loha)](https://comfyanonymous.github.io/ComfyUI_examples/lora/)
-- [Hypernetworks](https://comfyanonymous.github.io/ComfyUI_examples/hypernetworks/)
-- Loading full workflows (with seeds) from generated PNG files.
-- Saving/Loading workflows as Json files.
-- Nodes interface can be used to create complex workflows like one for [Hires fix](https://comfyanonymous.github.io/ComfyUI_examples/2_pass_txt2img/) or much more advanced ones.
-- [Area Composition](https://comfyanonymous.github.io/ComfyUI_examples/area_composition/)
-- [Inpainting](https://comfyanonymous.github.io/ComfyUI_examples/inpaint/) with both regular and inpainting models.
-- [ControlNet and T2I-Adapter](https://comfyanonymous.github.io/ComfyUI_examples/controlnet/)
-- [Upscale Models (ESRGAN, ESRGAN variants, SwinIR, Swin2SR, etc...)](https://comfyanonymous.github.io/ComfyUI_examples/upscale_models/)
-- [unCLIP Models](https://comfyanonymous.github.io/ComfyUI_examples/unclip/)
-- [GLIGEN](https://comfyanonymous.github.io/ComfyUI_examples/gligen/)
-- [Model Merging](https://comfyanonymous.github.io/ComfyUI_examples/model_merging/)
-- [LCM models and Loras](https://comfyanonymous.github.io/ComfyUI_examples/lcm/)
-- [SDXL Turbo](https://comfyanonymous.github.io/ComfyUI_examples/sdturbo/)
-- Latent previews with [TAESD](#how-to-show-high-quality-previews)
-- Starts up very fast.
-- Works fully offline: will never download anything.
-- [Config file](extra_model_paths.yaml.example) to set the search paths for models.
 
-Workflow examples can be found on the [Examples page](https://comfyanonymous.github.io/ComfyUI_examples/)
-
-## Shortcuts
+## 快捷键
 
 | Keybind                   | Explanation                                                                                                        |
 |---------------------------|--------------------------------------------------------------------------------------------------------------------|
@@ -65,55 +70,11 @@ Workflow examples can be found on the [Examples page](https://comfyanonymous.git
 | R                         | Refresh graph                                                                                                      |
 | Double-Click LMB          | Open node quick search palette                                                                                     |
 
-Ctrl can also be replaced with Cmd instead for macOS users
-
-# Installing
-
-## Windows
-
-There is a portable standalone build for Windows that should work for running on Nvidia GPUs or for running on your CPU only on the [releases page](https://github.com/comfyanonymous/ComfyUI/releases).
-
-### [Direct link to download](https://github.com/comfyanonymous/ComfyUI/releases/download/latest/ComfyUI_windows_portable_nvidia_cu121_or_cpu.7z)
-
-Simply download, extract with [7-Zip](https://7-zip.org) and run. Make sure you put your Stable Diffusion checkpoints/models (the huge ckpt/safetensors files) in: ComfyUI\models\checkpoints
-
-If you have trouble extracting it, right click the file -> properties -> unblock
-
-#### How do I share models between another UI and ComfyUI?
-
-See the [Config file](extra_model_paths.yaml.example) to set the search paths for models. In the standalone windows build you can find this file in the ComfyUI directory. Rename this file to extra_model_paths.yaml and edit it with your favorite text editor.
-
-## Jupyter Notebook
-
-To run it on services like paperspace, kaggle or colab you can use my [Jupyter Notebook](notebooks/comfyui_colab.ipynb)
-
-## Manual Install (Windows, Linux)
-
-Git clone this repo.
-
-Put your SD checkpoints (the huge ckpt/safetensors files) in: models/checkpoints
-
-Put your VAE in: models/vae
-
-
-### AMD GPUs (Linux only)
-AMD users can install rocm and pytorch with pip if you don't have it already installed, this is the command to install the stable version:
-
-```pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.7```
-
-This is the command to install the nightly with ROCm 6.0 which might have some performance improvements:
-
-```pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm6.0```
-
 ### NVIDIA
 
 Nvidia users should install stable pytorch using this command:
 
 ```pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121```
-
-This is the command to install pytorch nightly instead which might have performance improvements:
-
-```pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121```
 
 #### Troubleshooting
 

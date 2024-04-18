@@ -1,7 +1,6 @@
 __pycache__/
 *.py[cod]
-/output/
-/input/
+
 !/input/example.png
 /models/
 /temp/
@@ -16,3 +15,7 @@ venv/
 !/web/extensions/core/
 /tests-ui/data/object_info.json
 /user/
+.env/
+requirements/
+output/
+input/
