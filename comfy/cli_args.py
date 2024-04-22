@@ -39,9 +39,9 @@ parser.add_argument("--enable-cors-header", type=str, default=None, metavar="ORI
 parser.add_argument("--max-upload-size", type=float, default=100, help="Set the maximum upload size in MB.")
 
 parser.add_argument("--extra-model-paths-config", type=str, default=None, metavar="PATH", nargs='+', action='append', help="Load one or more extra_model_paths.yaml files.")
-parser.add_argument("--output-directory", type=str, default=None, help="Set the ComfyUI output directory.")
-parser.add_argument("--temp-directory", type=str, default=None, help="Set the ComfyUI temp directory (default is in the ComfyUI directory).")
-parser.add_argument("--input-directory", type=str, default=None, help="Set the ComfyUI input directory.")
+parser.add_argument("--output-directory", type=str, default=None, help="设置 ComfyUI 输出目录。")
+parser.add_argument("--temp-directory", type=str, default=None, help="设置 ComfyUI 临时目录（默认位于 ComfyUI 目录中）。")
+parser.add_argument("--input-directory", type=str, default=None, help="设置 ComfyUI 输入目录。")
 parser.add_argument("--auto-launch", action="store_true", help="Automatically launch ComfyUI in the default browser.")
 parser.add_argument("--disable-auto-launch", action="store_true", help="Disable auto launching the browser.")
 parser.add_argument("--cuda-device", type=int, default=None, metavar="DEVICE_ID", help="Set the id of the cuda device this instance will use.")
@@ -104,11 +104,11 @@ vram_group.add_argument("--cpu", action="store_true", help="To use the CPU for e
 
 
 parser.add_argument("--disable-smart-memory", action="store_true", help="Force ComfyUI to agressively offload to regular ram instead of keeping models in vram when it can.")
-parser.add_argument("--deterministic", action="store_true", help="Make pytorch use slower deterministic algorithms when it can. Note that this might not make images deterministic in all cases.")
+parser.add_argument("--deterministic", action="store_true", help="如果可以，让 pytorch 使用较慢的确定性算法。请注意，这可能并非在所有情况下都使图像具有确定性")
 
 parser.add_argument("--dont-print-server", action="store_true", help="Don't print server output.")
 parser.add_argument("--quick-test-for-ci", action="store_true", help="Quick test for CI.")
-parser.add_argument("--windows-standalone-build", action="store_true", help="Windows standalone build: Enable convenient things that most people using the standalone windows build will probably enjoy (like auto opening the page on startup).")
+parser.add_argument("--windows-standalone-build", action="store_true", help="Windows 独立版本：启用大多数使用独立 Windows 版本的人可能会喜欢的方便功能（例如在启动时自动打开页面）。")
 
 parser.add_argument("--disable-metadata", action="store_true", help="Disable saving prompt metadata in files.")
 

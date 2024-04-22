@@ -26,7 +26,7 @@ This ui will let you design and execute advanced stable diffusion pipelines usin
    mkdir  requirements
    ```
    ```
-    pip download -r requirements.txt -d .\requirements
+   pip download -r requirements.txt -d .\requirements
    ```
 5. 安装下载好的包(断网)
    ```
@@ -39,6 +39,12 @@ This ui will let you design and execute advanced stable diffusion pipelines usin
    ```
    python main.py --cpu
    ```
+7. pycharm启动`add Python interpreter`配置虚拟环境路径即可
+
+## 请求追踪
+1. `server.py`的`post_prompt`方法
+2. 
+
 ### [ComfyUI Examples](https://comfyanonymous.github.io/ComfyUI_examples/)
 
 ### [Installing ComfyUI](#installing)
