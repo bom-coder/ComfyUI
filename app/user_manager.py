@@ -52,7 +52,7 @@ class UserManager():
         path = user_root = os.path.abspath(os.path.join(root_dir, user))
 
         # prevent leaving /{type}
-        if os.path.commonpath((root_dir, user_root)) != os.path.abspath(root_dir):
+        if os.path.commonpath((root_dir, user_root)) != root_dir:
             return None
 
         parent = user_root
