@@ -184,16 +184,17 @@ def load_extra_path_config(yaml_path):
             continue
         base_path = None
         if "base_path" in conf:
-            base_path = conf.pop("base_path")
-        for x in conf:
-            for y in conf[x].split("\n"):
-                if len(y) == 0:
-                    continue
-                full_path = y
-                if base_path is not None:
-                    full_path = os.path.join(base_path, full_path)
-                logging.info("Adding extra search path {} {}".format(x, full_path))
-                folder_paths.add_model_folder_path(x, full_path)
+            base_path = conf.pop("base_path") # 移除了base_path并取出
+        if c!='other_base_path':
+            for x in conf:
+                for y in conf[x].split("\n"):
+                    if len(y) == 0:
+                        continue
+                    full_path = y
+                    if base_path is not None:
+                        full_path = os.path.join(base_path, full_path)
+                    logging.info("Adding extra search path {} {}".format(x, full_path))
+                    folder_paths.add_model_folder_path(x, full_path)
 
 
 if __name__ == "__main__":
@@ -209,37 +210,21 @@ if __name__ == "__main__":
     if os.path.isfile(extra_model_paths_config_path):
         load_extra_path_config(extra_model_paths_config_path)
 
-    if args.extra_model_paths_config:
-        for config_path in itertools.chain(*args.extra_model_paths_config):
-            load_extra_path_config(config_path)
-
     # 加载自带的一些节点
     init_custom_nodes()
 
+    # todo 警告信息
     cuda_malloc_warning()
 
+    # 添加路由,进程信息以及启动服务
     server.add_routes()
     hijack_progress(server)
-
     threading.Thread(target=prompt_worker, daemon=True, args=(q, server,)).start()
 
-    if args.output_directory:
-        output_dir = os.path.abspath(args.output_directory)
-        logging.info(f"Setting output directory to: {output_dir}")
-        folder_paths.set_output_directory(output_dir)
-
-    # These are the default folders that checkpoints, clip and vae models will be saved to when using CheckpointSave, etc.. nodes
+    # todo 保存模型的目录位置
     folder_paths.add_model_folder_path("checkpoints", os.path.join(folder_paths.get_output_directory(), "checkpoints"))
     folder_paths.add_model_folder_path("clip", os.path.join(folder_paths.get_output_directory(), "clip"))
     folder_paths.add_model_folder_path("vae", os.path.join(folder_paths.get_output_directory(), "vae"))
-
-    if args.input_directory:
-        input_dir = os.path.abspath(args.input_directory)
-        logging.info(f"Setting input directory to: {input_dir}")
-        folder_paths.set_input_directory(input_dir)
-
-    if args.quick_test_for_ci:
-        exit(0)
 
     call_on_start = None
     if args.auto_launch:

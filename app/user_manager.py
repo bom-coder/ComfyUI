@@ -4,9 +4,8 @@ import re
 import uuid
 from aiohttp import web
 from comfy.cli_args import args
-from folder_paths import user_directory
 from .app_settings import AppSettings
-
+from folder_paths import user_directory
 default_user = "default"
 users_file = os.path.join(user_directory, "users.json")
 
@@ -53,7 +52,7 @@ class UserManager():
         path = user_root = os.path.abspath(os.path.join(root_dir, user))
 
         # prevent leaving /{type}
-        if os.path.commonpath((root_dir, user_root)) != root_dir:
+        if os.path.commonpath((root_dir, user_root)) != os.path.abspath(root_dir):
             return None
 
         parent = user_root

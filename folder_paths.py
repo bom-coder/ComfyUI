@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+import yaml
 
 supported_pt_extensions = set(['.ckpt', '.pt', '.bin', '.pth', '.safetensors'])
 
@@ -16,6 +17,7 @@ def fnap(namelist, supported=supported_pt_extensions):
     for namearr in namelist:
         folder_names_and_paths[namearr[0]] = ([os.path.join(models_dir, name) for name in namearr], supported)
 
+
 fnap([
     ["checkpoints"], ["loras"], ["vae"], ["clip"], ["unet"], ["clip_vision"], ["style_models"], ["embeddings"],
     ["vae_approx"], ["controlnet", "t2i_adapter"], ["gligen"], ["upscale_models"], ["hypernetworks"], ["photomaker"]
@@ -26,19 +28,32 @@ folder_names_and_paths["classifiers"] = ([os.path.join(models_dir, "classifiers"
 folder_names_and_paths["custom_nodes"] = ([os.path.join(base_path, "custom_nodes")], [])
 
 # 默认的一些目录信息
-output_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "output")
-temp_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "temp")
-input_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "input")
-user_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "user")
+global output_directory
+global temp_directory
+global input_directory
+global user_directory
+
+
+def createDir(directory):
+    if not os.path.exists(directory):
+        try:
+            os.makedirs(directory)
+        except:
+            logging.error("Failed to create input directory")
+    return directory
+
+
+with open("extra_model_paths.yaml", 'r', encoding='utf-8') as stream:
+    config = yaml.safe_load(stream)
+    prePath = os.path.dirname(os.path.realpath(__file__))
+    if 'other_base_path' in config:
+        prePath = config['other_base_path']
+    output_directory = createDir(os.path.join(prePath, "output"))
+    temp_directory = createDir(os.path.join(prePath, "temp"))
+    input_directory = createDir(os.path.join(prePath, "input"))
+    user_directory = createDir(os.path.join(prePath, "user"))
 
 filename_list_cache = {}
-
-if not os.path.exists(input_directory):
-    try:
-        os.makedirs(input_directory)
-    except:
-        logging.error("Failed to create input directory")
-
 
 def set_output_directory(output_dir):
     global output_directory
