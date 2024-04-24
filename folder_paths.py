@@ -1,39 +1,31 @@
+import logging
 import os
 import time
-import logging
 
 supported_pt_extensions = set(['.ckpt', '.pt', '.bin', '.pth', '.safetensors'])
 
-folder_names_and_paths = {}
+base_path = os.path.dirname(os.path.realpath(__file__))  # 基础目录
+models_dir = os.path.join(base_path, "models")  # 模型的目录
 
-base_path = os.path.dirname(os.path.realpath(__file__))
-models_dir = os.path.join(base_path, "models")
-folder_names_and_paths["checkpoints"] = ([os.path.join(models_dir, "checkpoints")], supported_pt_extensions)
+folder_names_and_paths = {}
 folder_names_and_paths["configs"] = ([os.path.join(models_dir, "configs")], [".yaml"])
 
-folder_names_and_paths["loras"] = ([os.path.join(models_dir, "loras")], supported_pt_extensions)
-folder_names_and_paths["vae"] = ([os.path.join(models_dir, "vae")], supported_pt_extensions)
-folder_names_and_paths["clip"] = ([os.path.join(models_dir, "clip")], supported_pt_extensions)
-folder_names_and_paths["unet"] = ([os.path.join(models_dir, "unet")], supported_pt_extensions)
-folder_names_and_paths["clip_vision"] = ([os.path.join(models_dir, "clip_vision")], supported_pt_extensions)
-folder_names_and_paths["style_models"] = ([os.path.join(models_dir, "style_models")], supported_pt_extensions)
-folder_names_and_paths["embeddings"] = ([os.path.join(models_dir, "embeddings")], supported_pt_extensions)
+
+# folder_names_and_paths
+def fnap(namelist, supported=supported_pt_extensions):
+    for namearr in namelist:
+        folder_names_and_paths[namearr[0]] = ([os.path.join(models_dir, name) for name in namearr], supported)
+
+fnap([
+    ["checkpoints"], ["loras"], ["vae"], ["clip"], ["unet"], ["clip_vision"], ["style_models"], ["embeddings"],
+    ["vae_approx"], ["controlnet", "t2i_adapter"], ["gligen"], ["upscale_models"], ["hypernetworks"], ["photomaker"]
+])
+
 folder_names_and_paths["diffusers"] = ([os.path.join(models_dir, "diffusers")], ["folder"])
-folder_names_and_paths["vae_approx"] = ([os.path.join(models_dir, "vae_approx")], supported_pt_extensions)
-
-folder_names_and_paths["controlnet"] = ([os.path.join(models_dir, "controlnet"), os.path.join(models_dir, "t2i_adapter")], supported_pt_extensions)
-folder_names_and_paths["gligen"] = ([os.path.join(models_dir, "gligen")], supported_pt_extensions)
-
-folder_names_and_paths["upscale_models"] = ([os.path.join(models_dir, "upscale_models")], supported_pt_extensions)
-
+folder_names_and_paths["classifiers"] = ([os.path.join(models_dir, "classifiers")], {""})
 folder_names_and_paths["custom_nodes"] = ([os.path.join(base_path, "custom_nodes")], [])
 
-folder_names_and_paths["hypernetworks"] = ([os.path.join(models_dir, "hypernetworks")], supported_pt_extensions)
-
-folder_names_and_paths["photomaker"] = ([os.path.join(models_dir, "photomaker")], supported_pt_extensions)
-
-folder_names_and_paths["classifiers"] = ([os.path.join(models_dir, "classifiers")], {""})
-
+# 默认的一些目录信息
 output_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "output")
 temp_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "temp")
 input_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "input")
@@ -47,32 +39,38 @@ if not os.path.exists(input_directory):
     except:
         logging.error("Failed to create input directory")
 
+
 def set_output_directory(output_dir):
     global output_directory
     output_directory = output_dir
+
 
 def set_temp_directory(temp_dir):
     global temp_directory
     temp_directory = temp_dir
 
+
 def set_input_directory(input_dir):
     global input_directory
     input_directory = input_dir
+
 
 def get_output_directory():
     global output_directory
     return output_directory
 
+
 def get_temp_directory():
     global temp_directory
     return temp_directory
+
 
 def get_input_directory():
     global input_directory
     return input_directory
 
 
-#NOTE: used in http server so don't put folders that should not be accessed remotely
+# NOTE: used in http server so don't put folders that should not be accessed remotely
 def get_directory_by_type(type_name):
     if type_name == "output":
         return get_output_directory()
@@ -130,8 +128,10 @@ def add_model_folder_path(folder_name, full_folder_path):
     else:
         folder_names_and_paths[folder_name] = ([full_folder_path], set())
 
+
 def get_folder_paths(folder_name):
     return folder_names_and_paths[folder_name][0][:]
+
 
 def recursive_search(directory, excluded_dir_names=None):
     if not os.path.isdir(directory):
@@ -166,9 +166,9 @@ def recursive_search(directory, excluded_dir_names=None):
     logging.debug("found {} files".format(len(result)))
     return result, dirs
 
+
 def filter_files_extensions(files, extensions):
     return sorted(list(filter(lambda a: os.path.splitext(a)[-1].lower() in extensions or len(extensions) == 0, files)))
-
 
 
 def get_full_path(folder_name, filename):
@@ -186,6 +186,7 @@ def get_full_path(folder_name, filename):
 
     return None
 
+
 def get_filename_list_(folder_name):
     global folder_names_and_paths
     output_list = set()
@@ -197,6 +198,7 @@ def get_filename_list_(folder_name):
         output_folders = {**output_folders, **folders_all}
 
     return (sorted(list(output_list)), output_folders, time.perf_counter())
+
 
 def cached_filename_list_(folder_name):
     global filename_list_cache
@@ -219,6 +221,7 @@ def cached_filename_list_(folder_name):
 
     return out
 
+
 def get_filename_list(folder_name):
     out = cached_filename_list_(folder_name)
     if out is None:
@@ -226,6 +229,7 @@ def get_filename_list(folder_name):
         global filename_list_cache
         filename_list_cache[folder_name] = out
     return list(out[0])
+
 
 def get_save_image_path(filename_prefix, output_dir, image_width=0, image_height=0):
     def map_filename(filename):
@@ -258,7 +262,8 @@ def get_save_image_path(filename_prefix, output_dir, image_width=0, image_height
         raise Exception(err)
 
     try:
-        counter = max(filter(lambda a: a[1][:-1] == filename and a[1][-1] == "_", map(map_filename, os.listdir(full_output_folder))))[0] + 1
+        counter = max(filter(lambda a: a[1][:-1] == filename and a[1][-1] == "_",
+                             map(map_filename, os.listdir(full_output_folder))))[0] + 1
     except ValueError:
         counter = 1
     except FileNotFoundError:

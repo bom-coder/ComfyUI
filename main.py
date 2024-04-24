@@ -197,23 +197,7 @@ def load_extra_path_config(yaml_path):
 
 
 if __name__ == "__main__":
-    # 设置临时目录,实际的目录是 {dir}/temp todo 作用如何未知
-    if args.temp_directory:
-        temp_dir = os.path.join(os.path.abspath(args.temp_directory), "temp")
-        logging.info(f"将 temp 目录设置为: {temp_dir}")
-        folder_paths.set_temp_directory(temp_dir)
-
-    # 清理临时目录
-    cleanup_temp()
-
-    if args.windows_standalone_build:
-        try:
-            import new_updater
-
-            # todo 会执行部分脚本
-            new_updater.update_windows_updater()
-        except:
-            pass
+    cleanup_temp() # 清理临时目录
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
