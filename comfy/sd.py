@@ -492,7 +492,7 @@ def load_checkpoint(config_path=None, ckpt_path=None, output_vae=True, output_cl
     return (comfy.model_patcher.ModelPatcher(model, load_device=model_management.get_torch_device(), offload_device=offload_device), clip, vae)
 
 def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, output_clipvision=False, embedding_directory=None, output_model=True):
-    sd = comfy.utils.load_torch_file(ckpt_path)
+    sd = comfy.utils.load_torch_file(ckpt_path) #加载模型
     sd_keys = sd.keys()
     clip = None
     clipvision = None
@@ -522,7 +522,7 @@ def load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, o
         model = model_config.get_model(sd, "model.diffusion_model.", device=inital_load_device)
         model.load_model_weights(sd, "model.diffusion_model.")
 
-    if output_vae:
+    if output_vae: #从模型中提取vae
         vae_sd = comfy.utils.state_dict_prefix_replace(sd, {k: "" for k in model_config.vae_key_prefix}, filter_keys=True)
         vae_sd = model_config.process_vae_state_dict(vae_sd)
         vae = VAE(sd=vae_sd)

@@ -11,7 +11,7 @@ def load_torch_file(ckpt, safe_load=False, device=None):
     if device is None:
         device = torch.device("cpu")
     if ckpt.lower().endswith(".safetensors"):
-        sd = safetensors.torch.load_file(ckpt, device=device.type)
+        sd = safetensors.torch.load_file(ckpt, device=device.type) # 开始加载模型
     else:
         if safe_load:
             if not 'weights_only' in torch.load.__code__.co_varnames:
